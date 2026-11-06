@@ -67,6 +67,7 @@ function LukiPage() {
       return reply;
     } catch {
       update((st) => ({ ...st, chat: [...st.chat, { role: "assistant", content: "Oops, I couldn't reach my brain. Try again? 🥺" }] }));
+      return undefined;
     } finally { setBusy(false); }
   };
 

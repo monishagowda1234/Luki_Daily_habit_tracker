@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useStore } from "@/lib/store";
 import { Home, Grid3x3, CalendarHeart, Sparkle, Bot } from "lucide-react";
 import type { ReactNode } from "react";
-import luki from "@/assets/luki.jpg";
+import { LukiAnimated } from "@/components/LukiAnimated";
 
 const tabs = [
   { to: "/", label: "Today", icon: Home },
@@ -12,14 +14,13 @@ const tabs = [
 ] as const;
 
 export function LukiFace({ size = 96, talking = false }: { size?: number; talking?: boolean }) {
-  return (
-    <img src={luki} alt="Luki" width={size} height={size}
-      className={`rounded-full object-cover animate-float ${talking ? "animate-ring" : ""}`}
-      style={{ width: size, height: size }} />
-  );
+  return <LukiAnimated size={size} talking={talking} />;
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const { s, ready } = useStore();
+  const nav = useNavigate();
+  useEffect(() => { if (ready && !s.settings.phone) void nav({ to: "/login" }); }, [ready, s.settings.phone, nav]);
   return (
     <div className="mx-auto min-h-screen max-w-md pb-28">
       {children}

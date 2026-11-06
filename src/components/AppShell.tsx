@@ -1,4 +1,6 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useStore } from "@/lib/store";
 import { Home, Grid3x3, CalendarHeart, Sparkle, Bot } from "lucide-react";
 import type { ReactNode } from "react";
 import { LukiAnimated } from "@/components/LukiAnimated";
@@ -16,6 +18,9 @@ export function LukiFace({ size = 96, talking = false }: { size?: number; talkin
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const { s, ready } = useStore();
+  const nav = useNavigate();
+  useEffect(() => { if (ready && !s.settings.phone) void nav({ to: "/login" }); }, [ready, s.settings.phone, nav]);
   return (
     <div className="mx-auto min-h-screen max-w-md pb-28">
       {children}

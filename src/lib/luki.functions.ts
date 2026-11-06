@@ -41,9 +41,9 @@ const Contact = z.object({
 export const contactUser = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => Contact.parse(d))
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
-    const tw = process.env.TWILIO_API_KEY;
-    const from = process.env.TWILIO_FROM_NUMBER;
+    const key = process.env['LOVABLE_API_KEY'];
+    const tw = process.env['TWILIO_API_KEY'];
+    const from = process.env['TWILIO_FROM_NUMBER'];
     if (!key || !tw) return { ok: false, error: "Phone service isn't connected yet." };
     if (!from) return { ok: false, error: "Luki's sending phone number isn't set yet." };
     const body = new URLSearchParams({ To: data.to, From: from });

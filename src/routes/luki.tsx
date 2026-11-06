@@ -28,7 +28,7 @@ function buildContext() {
 function applyActions(text: string) {
   const t = todayKey();
   for (const m of text.matchAll(/\[\[(ADD|REMOVE|DONE):\s*([^\]@]+?)(?:\s*@\s*([0-9:]+))?\s*\]\]/g)) {
-    const [, op, title, time] = m; const low = title.trim().toLowerCase();
+    const op = m[1]; const title = m[2] ?? ""; const time = m[3]; const low = title.trim().toLowerCase();
     update((st) => {
       if (op === "ADD") return { ...st, tasks: [...st.tasks, { id: uid(), title: title.trim(), time, done: false, date: t }] };
       if (op === "REMOVE") return { ...st, tasks: st.tasks.filter((x) => !(x.date === t && x.title.toLowerCase().includes(low))) };

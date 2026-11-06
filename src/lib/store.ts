@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 
-export type Task = { id: string; title: string; time?: string; done: boolean; date: string };
+export type Task = { id: string; title: string; time?: string | undefined; done: boolean; date: string };
 export type Habit = { id: string; name: string; emoji: string; log: string[] };
 export type DayLog = { date: string; mood: number; note: string };
 export type Dream = { id: string; title: string; why: string; created: string };

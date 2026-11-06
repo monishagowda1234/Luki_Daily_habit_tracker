@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Home, Grid3x3, CalendarHeart, Sparkle, Bot } from "lucide-react";
 import type { ReactNode } from "react";
-import luki from "@/assets/luki.jpg";
+import { LukiAnimated } from "@/components/LukiAnimated";
 
 const tabs = [
   { to: "/", label: "Today", icon: Home },
@@ -12,11 +12,7 @@ const tabs = [
 ] as const;
 
 export function LukiFace({ size = 96, talking = false }: { size?: number; talking?: boolean }) {
-  return (
-    <img src={luki} alt="Luki" width={size} height={size}
-      className={`rounded-full object-cover animate-float ${talking ? "animate-ring" : ""}`}
-      style={{ width: size, height: size }} />
-  );
+  return <LukiAnimated size={size} talking={talking} />;
 }
 
 export function AppShell({ children }: { children: ReactNode }) {

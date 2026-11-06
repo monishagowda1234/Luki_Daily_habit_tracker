@@ -102,3 +102,11 @@
 @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 oklch(0.68 0.17 0 / .5) } 100% { box-shadow: 0 0 0 22px oklch(0.68 0.17 0 / 0) } }
 @utility animate-float { animation: float 4s ease-in-out infinite; }
 @utility animate-ring { animation: pulse-ring 1.6s ease-out infinite; }
+
+@keyframes twinkle { 0%,100% { opacity: 0; transform: scale(.4) rotate(0) } 50% { opacity: 1; transform: scale(1.1) rotate(45deg) } }
+@keyframes talk { 0%,100% { transform: scaleY(.4) } 50% { transform: scaleY(1.2) } }
+@layer components {
+  .luki-twinkle { animation: twinkle 2.4s ease-in-out infinite; }
+  .luki-talk { transform-origin: 100px 134px; animation: talk .35s ease-in-out infinite; }
+  .luki-glow { filter: drop-shadow(0 0 4px var(--glow)); }
+}

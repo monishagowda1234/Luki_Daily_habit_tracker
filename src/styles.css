@@ -35,6 +35,10 @@
   --color-visor: var(--visor);
   --color-visor-foreground: var(--visor-foreground);
   --color-glow: var(--glow);
+  --color-hood: var(--hood);
+  --color-hood-dark: var(--hood-dark);
+  --color-star: var(--star);
+  --color-plush: var(--plush);
   --color-heat-0: var(--heat-0);
   --color-heat-1: var(--heat-1);
   --color-heat-2: var(--heat-2);
@@ -63,9 +67,13 @@
   --border: oklch(0.88 0.04 355);
   --input: oklch(0.9 0.035 355);
   --ring: oklch(0.68 0.17 0);
-  --visor: oklch(0.2 0.03 300);
+  --visor: oklch(0.17 0.04 290);
   --visor-foreground: oklch(0.95 0.03 320);
-  --glow: oklch(0.8 0.12 300);
+  --glow: oklch(0.85 0.1 285);
+  --hood: oklch(0.68 0.12 290);
+  --hood-dark: oklch(0.55 0.13 290);
+  --star: oklch(0.88 0.13 90);
+  --plush: oklch(0.95 0.01 80);
   --heat-0: oklch(0.91 0.03 355);
   --heat-1: oklch(0.85 0.07 355);
   --heat-2: oklch(0.77 0.12 0);
@@ -109,4 +117,11 @@
   .luki-twinkle { animation: twinkle 2.4s ease-in-out infinite; }
   .luki-talk { transform-origin: 100px 134px; animation: talk .35s ease-in-out infinite; }
   .luki-glow { filter: drop-shadow(0 0 4px var(--glow)); }
+}
+
+@keyframes star-glow { 0%,100% { filter: drop-shadow(0 0 4px var(--star)) } 50% { filter: drop-shadow(0 0 12px var(--star)) } }
+@keyframes sprout { 0%,100% { transform: rotate(-6deg) } 50% { transform: rotate(6deg) } }
+@layer components {
+  .luki-star { animation: star-glow 2s ease-in-out infinite; }
+  .luki-sprout { transform-origin: 100px 30px; animation: sprout 3s ease-in-out infinite; }
 }

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DayRouteImport } from './routes/day'
 import { Route as DreamsRouteImport } from './routes/dreams'
 import { Route as HabitsRouteImport } from './routes/habits'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LukiRouteImport } from './routes/luki'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const HabitsRoute = HabitsRouteImport.update({
   path: '/habits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LukiRoute = LukiRouteImport.update({
   id: '/luki',
   path: '/luki',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/day': typeof DayRoute
   '/dreams': typeof DreamsRoute
   '/habits': typeof HabitsRoute
+  '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/day': typeof DayRoute
   '/dreams': typeof DreamsRoute
   '/habits': typeof HabitsRoute
+  '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,15 @@ export interface FileRoutesById {
   '/day': typeof DayRoute
   '/dreams': typeof DreamsRoute
   '/habits': typeof HabitsRoute
+  '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/day' | '/dreams' | '/habits' | '/luki'
+  fullPaths: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/day' | '/dreams' | '/habits' | '/luki'
-  id: '__root__' | '/' | '/day' | '/dreams' | '/habits' | '/luki'
+  to: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
+  id: '__root__' | '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +85,7 @@ export interface RootRouteChildren {
   DayRoute: typeof DayRoute
   DreamsRoute: typeof DreamsRoute
   HabitsRoute: typeof HabitsRoute
+  LoginRoute: typeof LoginRoute
   LukiRoute: typeof LukiRoute
 }
 
@@ -109,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HabitsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/luki': {
       id: '/luki'
       path: '/luki'
@@ -124,6 +141,7 @@ const rootRouteChildren: RootRouteChildren = {
   DayRoute: DayRoute,
   DreamsRoute: DreamsRoute,
   HabitsRoute: HabitsRoute,
+  LoginRoute: LoginRoute,
   LukiRoute: LukiRoute,
 }
 export const routeTree = rootRouteImport

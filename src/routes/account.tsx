@@ -40,9 +40,9 @@ function Account() {
   const joined = s.settings.joined || todayKey();
 
   const save = () => {
-    if (!f.name.trim()) return toast.error("Please add your name 💗");
+    if (!f.name.trim()) { toast.error("Please add your name 💗"); return; }
     const phone = f.phone.replace(/[\s-]/g, "");
-    if (!/^\+[1-9]\d{7,14}$/.test(phone)) return toast.error("Use a full mobile number like +919876543210");
+    if (!/^\+[1-9]\d{7,14}$/.test(phone)) { toast.error("Use a full mobile number like +919876543210"); return; }
     const goal = Math.min(960, Math.max(10, Math.round(f.focusGoal || 0)));
     update((st) => ({ ...st, settings: { ...f, name: f.name.trim(), phone, focusGoal: goal, joined } }));
     toast.success("Profile saved 💗");

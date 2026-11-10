@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Play, Pause, RotateCcw, Check, Trash2, BarChart3 } from "lucide-react";
+import { Play, Pause, RotateCcw, Check, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell, Header } from "@/components/AppShell";
 import { useStore, todayKey } from "@/lib/store";
@@ -129,16 +129,7 @@ function TimerPage() {
             ))}
           </ul>
         </div>
-        <SessionCleanup />
       </div>
     </AppShell>
-  );
-}
-
-function SessionCleanup() {
-  return (
-    <p className="flex items-center justify-center gap-1 pb-2 text-center text-[11px] text-muted-foreground">
-      <Trash2 className="h-3 w-3" /> Remove entries from the daily report page.
-    </p>
   );
 }

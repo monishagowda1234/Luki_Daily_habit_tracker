@@ -15,6 +15,7 @@ import { Route as DreamsRouteImport } from './routes/dreams'
 import { Route as HabitsRouteImport } from './routes/habits'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LukiRouteImport } from './routes/luki'
+import { Route as TimerRouteImport } from './routes/timer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const LukiRoute = LukiRouteImport.update({
   path: '/luki',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TimerRoute = TimerRouteImport.update({
+  id: '/timer',
+  path: '/timer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
+  '/timer': typeof TimerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
+  '/timer': typeof TimerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,13 +79,23 @@ export interface FileRoutesById {
   '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
+  '/timer': typeof TimerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
+  fullPaths:
+    '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki' | '/timer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
-  id: '__root__' | '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
+  to: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki' | '/timer'
+  id:
+    | '__root__'
+    | '/'
+    | '/day'
+    | '/dreams'
+    | '/habits'
+    | '/login'
+    | '/luki'
+    | '/timer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -87,6 +105,7 @@ export interface RootRouteChildren {
   HabitsRoute: typeof HabitsRoute
   LoginRoute: typeof LoginRoute
   LukiRoute: typeof LukiRoute
+  TimerRoute: typeof TimerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -133,6 +152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LukiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/timer': {
+      id: '/timer'
+      path: '/timer'
+      fullPath: '/timer'
+      preLoaderRoute: typeof TimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -143,6 +169,7 @@ const rootRouteChildren: RootRouteChildren = {
   HabitsRoute: HabitsRoute,
   LoginRoute: LoginRoute,
   LukiRoute: LukiRoute,
+  TimerRoute: TimerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

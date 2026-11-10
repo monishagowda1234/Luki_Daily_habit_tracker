@@ -10,15 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as DayRouteImport } from './routes/day'
 import { Route as DreamsRouteImport } from './routes/dreams'
 import { Route as HabitsRouteImport } from './routes/habits'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LukiRouteImport } from './routes/luki'
+import { Route as ReportRouteImport } from './routes/report'
+import { Route as TimerRouteImport } from './routes/timer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DayRoute = DayRouteImport.update({
@@ -46,47 +54,97 @@ const LukiRoute = LukiRouteImport.update({
   path: '/luki',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimerRoute = TimerRouteImport.update({
+  id: '/timer',
+  path: '/timer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/day': typeof DayRoute
   '/dreams': typeof DreamsRoute
   '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
+  '/report': typeof ReportRoute
+  '/timer': typeof TimerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/day': typeof DayRoute
   '/dreams': typeof DreamsRoute
   '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
+  '/report': typeof ReportRoute
+  '/timer': typeof TimerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/day': typeof DayRoute
   '/dreams': typeof DreamsRoute
   '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
   '/luki': typeof LukiRoute
+  '/report': typeof ReportRoute
+  '/timer': typeof TimerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/day'
+    | '/dreams'
+    | '/habits'
+    | '/login'
+    | '/luki'
+    | '/report'
+    | '/timer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
-  id: '__root__' | '/' | '/day' | '/dreams' | '/habits' | '/login' | '/luki'
+  to:
+    | '/'
+    | '/account'
+    | '/day'
+    | '/dreams'
+    | '/habits'
+    | '/login'
+    | '/luki'
+    | '/report'
+    | '/timer'
+  id:
+    | '__root__'
+    | '/'
+    | '/account'
+    | '/day'
+    | '/dreams'
+    | '/habits'
+    | '/login'
+    | '/luki'
+    | '/report'
+    | '/timer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   DayRoute: typeof DayRoute
   DreamsRoute: typeof DreamsRoute
   HabitsRoute: typeof HabitsRoute
   LoginRoute: typeof LoginRoute
   LukiRoute: typeof LukiRoute
+  ReportRoute: typeof ReportRoute
+  TimerRoute: typeof TimerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -96,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/day': {
@@ -133,16 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LukiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/timer': {
+      id: '/timer'
+      path: '/timer'
+      fullPath: '/timer'
+      preLoaderRoute: typeof TimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   DayRoute: DayRoute,
   DreamsRoute: DreamsRoute,
   HabitsRoute: HabitsRoute,
   LoginRoute: LoginRoute,
   LukiRoute: LukiRoute,
+  ReportRoute: ReportRoute,
+  TimerRoute: TimerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -37,7 +37,7 @@ function Today() {
 
   return (
     <AppShell>
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-4">
         <div className="glass flex items-center gap-4 p-5">
           <LukiFace size={92} />
           <div className="flex-1">

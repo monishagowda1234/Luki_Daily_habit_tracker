@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { LukiAnimated } from "@/components/LukiAnimated";
-import { useStore } from "@/lib/store";
+import { useStore, todayKey } from "@/lib/store";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -30,7 +30,7 @@ function Login() {
     const full = `${code}${phone.replace(/\D/g, "")}`;
     if (!name.trim()) return setErr("Tell Luki your name 💗");
     if (!/^\+[1-9]\d{7,14}$/.test(full)) return setErr("Please enter a valid mobile number.");
-    update((st) => ({ ...st, settings: { name: name.trim(), phone: full, wake, sleep } }));
+    update((st) => ({ ...st, settings: { ...st.settings, name: name.trim(), phone: full, wake, sleep, joined: st.settings.joined || todayKey() } }));
     void nav({ to: "/" });
   };
 

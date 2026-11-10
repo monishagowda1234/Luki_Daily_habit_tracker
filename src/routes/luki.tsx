@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Send, Phone, MessageSquare, Sun, Moon, Timer, Settings2 } from "lucide-react";
 import { AppShell, LukiFace } from "@/components/AppShell";
 import { useStore, getState, update, todayKey, uid } from "@/lib/store";
 import { askLuki, contactUser } from "@/lib/luki.functions";
+import { askNotify, clock, elapsedOf, isActive, remainingOf, startTimer, useNow } from "@/lib/timer";
 
 export const Route = createFileRoute("/luki")({
   head: () => ({
@@ -40,21 +41,18 @@ function applyActions(text: string) {
 
 function LukiPage() {
   const { s } = useStore();
+  const nav = useNavigate();
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
   const [showSettings, setShowSettings] = useState(false);
-  const [focus, setFocus] = useState(0);
   const end = useRef<HTMLDivElement>(null);
   const ta = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { end.current?.scrollIntoView({ behavior: "smooth" }); }, [s.chat.length, busy]);
   useEffect(() => { ta.current?.focus(); }, [busy]);
-  useEffect(() => {
-    if (focus <= 0) return;
-    const id = setInterval(() => setFocus((f) => { if (f <= 1) { setNote("Focus session complete! Take a 5 min break 💗"); return 0; } return f - 1; }), 1000);
-    return () => clearInterval(id);
-  }, [focus > 0]); // eslint-disable-line react-hooks/exhaustive-deps
+  const timerOn = isActive(s.timer);
+  const now = useNow(s.timer.runningSince !== null, 500);
 
   const send = async (text: string) => {
     if (!text.trim() || busy) return;
@@ -101,7 +99,7 @@ function LukiPage() {
       <div className="flex flex-col items-center px-5 pt-6">
         <LukiFace size={130} talking={busy} />
         <h1 className="mt-2 text-2xl font-semibold">Luki</h1>
-        <p className="text-xs text-muted-foreground">{busy ? "thinking…" : focus ? `Focus: ${Math.floor(focus / 60)}:${String(focus % 60).padStart(2, "0")}` : "your personal assistant"}</p>
+        <p className="text-xs text-muted-foreground">{busy ? "thinking…" : timerOn ? `${s.timer.activity || "Focus"}: ${clock(s.timer.mode === "timer" ? remainingOf(s.timer, now) : elapsedOf(s.timer, now))}` : "your personal assistant"}</p>
       </div>
 
       <div className="mt-4 grid grid-cols-5 gap-2 px-5">
@@ -109,7 +107,7 @@ function LukiPage() {
           { icon: Sun, label: "Morning", fn: () => contact("call", morning) },
           { icon: Moon, label: "Night", fn: () => contact("call", night) },
           { icon: MessageSquare, label: "Text me", fn: () => contact("sms", "Write a short SMS with my tasks for today. Under 50 words.") },
-          { icon: Timer, label: focus ? "Stop" : "Focus", fn: () => { if (focus) setFocus(0); else { setFocus(25 * 60); void send("I'm starting a 25 minute focus/study session. Give me one quick tip to stay focused."); } } },
+          { icon: Timer, label: timerOn ? "Timer" : "Focus", fn: () => { if (timerOn) void nav({ to: "/timer" }); else { askNotify(); startTimer({ mode: "timer", activity: "Focus", duration: 25 * 60_000 }); void send("I'm starting a 25 minute focus/study session. Give me one quick tip to stay focused."); } } },
           { icon: Settings2, label: "Setup", fn: () => setShowSettings((v) => !v) },
         ].map(({ icon: I, label, fn }) => (
           <button key={label} onClick={fn} className="glass flex flex-col items-center gap-1 py-2.5 text-[11px] font-bold"><I className="h-5 w-5 text-primary" />{label}</button>

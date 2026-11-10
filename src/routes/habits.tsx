@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { AppShell, Header } from "@/components/AppShell";
 import { HeatMap } from "@/components/HeatMap";
-import { useStore, uid } from "@/lib/store";
+import { useStore, uid, todayKey } from "@/lib/store";
 
 export const Route = createFileRoute("/habits")({
   head: () => ({
@@ -32,7 +32,7 @@ function Habits() {
     const t = s.tasks.filter((x) => x.date === d && x.done).length;
     return Math.ceil(((h + t) / Math.max(1, s.habits.length)) * 4);
   };
-  const streak = (log: string[]) => { let n = 0; const d = new Date(); while (log.includes(d.toISOString().slice(0, 10))) { n++; d.setDate(d.getDate() - 1); } return n; };
+  const streak = (log: string[]) => { let n = 0; const d = new Date(); while (log.includes(todayKey(d))) { n++; d.setDate(d.getDate() - 1); } return n; };
 
   return (
     <AppShell>

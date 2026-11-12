@@ -4,7 +4,7 @@ import { AppShell, Header } from "@/components/AppShell";
 import { HeatMap } from "@/components/HeatMap";
 import { useStore, todayKey } from "@/lib/store";
 
-export const Route = createFileRoute("/day")({
+export const Route = createFileRoute("/_authenticated/day")({
   head: () => ({
     meta: [
       { title: "Mood Map — Luki" },

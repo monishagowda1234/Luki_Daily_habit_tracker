@@ -4,7 +4,7 @@ import { Trash2 } from "lucide-react";
 import { AppShell, Header } from "@/components/AppShell";
 import { useStore, uid, todayKey } from "@/lib/store";
 
-export const Route = createFileRoute("/dreams")({
+export const Route = createFileRoute("/_authenticated/dreams")({
   head: () => ({
     meta: [
       { title: "Manifest — Luki" },

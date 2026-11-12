@@ -6,7 +6,7 @@ import { AppShell, Header, LukiFace } from "@/components/AppShell";
 import { useStore, getState, resetAll, todayKey } from "@/lib/store";
 import { fmtDur } from "@/lib/report";
 
-export const Route = createFileRoute("/account")({
+export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
     meta: [
       { title: "My Account — Luki" },

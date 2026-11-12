@@ -5,7 +5,7 @@ import { AppShell, Header } from "@/components/AppShell";
 import { HeatMap } from "@/components/HeatMap";
 import { useStore, uid, todayKey } from "@/lib/store";
 
-export const Route = createFileRoute("/habits")({
+export const Route = createFileRoute("/_authenticated/habits")({
   head: () => ({
     meta: [
       { title: "Habit Map — Luki" },

@@ -8,7 +8,7 @@ import { useStore, todayKey, uid, getState } from "@/lib/store";
 import { dayReport, fmtDur, lastDays } from "@/lib/report";
 import { askLuki } from "@/lib/luki.functions";
 
-export const Route = createFileRoute("/report")({
+export const Route = createFileRoute("/_authenticated/report")({
   head: () => ({
     meta: [
       { title: "Daily Report — Luki" },

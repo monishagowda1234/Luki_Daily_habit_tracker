@@ -7,7 +7,7 @@ import { useStore, todayKey } from "@/lib/store";
 import { askNotify, clock, elapsedOf, finishTimer, isActive, pauseTimer, remainingOf, resetTimer, setTimer, startTimer, useNow } from "@/lib/timer";
 import { fmtDur, sessionsOn } from "@/lib/report";
 
-export const Route = createFileRoute("/timer")({
+export const Route = createFileRoute("/_authenticated/timer")({
   head: () => ({
     meta: [
       { title: "Timer — Luki" },

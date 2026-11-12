@@ -9,181 +9,146 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as DayRouteImport } from './routes/day'
-import { Route as DreamsRouteImport } from './routes/dreams'
-import { Route as HabitsRouteImport } from './routes/habits'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as LukiRouteImport } from './routes/luki'
-import { Route as ReportRouteImport } from './routes/report'
-import { Route as TimerRouteImport } from './routes/timer'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as AuthenticatedDayRouteImport } from './routes/_authenticated/day'
+import { Route as AuthenticatedDreamsRouteImport } from './routes/_authenticated/dreams'
+import { Route as AuthenticatedHabitsRouteImport } from './routes/_authenticated/habits'
+import { Route as AuthenticatedLukiRouteImport } from './routes/_authenticated/luki'
+import { Route as AuthenticatedReportRouteImport } from './routes/_authenticated/report'
+import { Route as AuthenticatedTimerRouteImport } from './routes/_authenticated/timer'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DayRoute = DayRouteImport.update({
-  id: '/day',
-  path: '/day',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DreamsRoute = DreamsRouteImport.update({
-  id: '/dreams',
-  path: '/dreams',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HabitsRoute = HabitsRouteImport.update({
-  id: '/habits',
-  path: '/habits',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LukiRoute = LukiRouteImport.update({
-  id: '/luki',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/_authenticated/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDayRoute = AuthenticatedDayRouteImport.update({
+  id: '/_authenticated/day',
+  path: '/day',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDreamsRoute = AuthenticatedDreamsRouteImport.update({
+  id: '/_authenticated/dreams',
+  path: '/dreams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedHabitsRoute = AuthenticatedHabitsRouteImport.update({
+  id: '/_authenticated/habits',
+  path: '/habits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedLukiRoute = AuthenticatedLukiRouteImport.update({
+  id: '/_authenticated/luki',
   path: '/luki',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReportRoute = ReportRouteImport.update({
-  id: '/report',
+const AuthenticatedReportRoute = AuthenticatedReportRouteImport.update({
+  id: '/_authenticated/report',
   path: '/report',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TimerRoute = TimerRouteImport.update({
-  id: '/timer',
+const AuthenticatedTimerRoute = AuthenticatedTimerRouteImport.update({
+  id: '/_authenticated/timer',
   path: '/timer',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/day': typeof DayRoute
-  '/dreams': typeof DreamsRoute
-  '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
-  '/luki': typeof LukiRoute
-  '/report': typeof ReportRoute
-  '/timer': typeof TimerRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/day': typeof AuthenticatedDayRoute
+  '/dreams': typeof AuthenticatedDreamsRoute
+  '/habits': typeof AuthenticatedHabitsRoute
+  '/luki': typeof AuthenticatedLukiRoute
+  '/report': typeof AuthenticatedReportRoute
+  '/timer': typeof AuthenticatedTimerRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/day': typeof DayRoute
-  '/dreams': typeof DreamsRoute
-  '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
-  '/luki': typeof LukiRoute
-  '/report': typeof ReportRoute
-  '/timer': typeof TimerRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/day': typeof AuthenticatedDayRoute
+  '/dreams': typeof AuthenticatedDreamsRoute
+  '/habits': typeof AuthenticatedHabitsRoute
+  '/luki': typeof AuthenticatedLukiRoute
+  '/report': typeof AuthenticatedReportRoute
+  '/timer': typeof AuthenticatedTimerRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/day': typeof DayRoute
-  '/dreams': typeof DreamsRoute
-  '/habits': typeof HabitsRoute
   '/login': typeof LoginRoute
-  '/luki': typeof LukiRoute
-  '/report': typeof ReportRoute
-  '/timer': typeof TimerRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/_authenticated/day': typeof AuthenticatedDayRoute
+  '/_authenticated/dreams': typeof AuthenticatedDreamsRoute
+  '/_authenticated/habits': typeof AuthenticatedHabitsRoute
+  '/_authenticated/luki': typeof AuthenticatedLukiRoute
+  '/_authenticated/report': typeof AuthenticatedReportRoute
+  '/_authenticated/timer': typeof AuthenticatedTimerRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
+    | '/login'
     | '/account'
     | '/day'
     | '/dreams'
     | '/habits'
-    | '/login'
     | '/luki'
     | '/report'
     | '/timer'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/login'
     | '/account'
     | '/day'
     | '/dreams'
     | '/habits'
-    | '/login'
     | '/luki'
     | '/report'
     | '/timer'
+    | '/'
   id:
     | '__root__'
-    | '/'
-    | '/account'
-    | '/day'
-    | '/dreams'
-    | '/habits'
     | '/login'
-    | '/luki'
-    | '/report'
-    | '/timer'
+    | '/_authenticated/account'
+    | '/_authenticated/day'
+    | '/_authenticated/dreams'
+    | '/_authenticated/habits'
+    | '/_authenticated/luki'
+    | '/_authenticated/report'
+    | '/_authenticated/timer'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
-  DayRoute: typeof DayRoute
-  DreamsRoute: typeof DreamsRoute
-  HabitsRoute: typeof HabitsRoute
   LoginRoute: typeof LoginRoute
-  LukiRoute: typeof LukiRoute
-  ReportRoute: typeof ReportRoute
-  TimerRoute: typeof TimerRoute
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+  AuthenticatedDayRoute: typeof AuthenticatedDayRoute
+  AuthenticatedDreamsRoute: typeof AuthenticatedDreamsRoute
+  AuthenticatedHabitsRoute: typeof AuthenticatedHabitsRoute
+  AuthenticatedLukiRoute: typeof AuthenticatedLukiRoute
+  AuthenticatedReportRoute: typeof AuthenticatedReportRoute
+  AuthenticatedTimerRoute: typeof AuthenticatedTimerRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/day': {
-      id: '/day'
-      path: '/day'
-      fullPath: '/day'
-      preLoaderRoute: typeof DayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dreams': {
-      id: '/dreams'
-      path: '/dreams'
-      fullPath: '/dreams'
-      preLoaderRoute: typeof DreamsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/habits': {
-      id: '/habits'
-      path: '/habits'
-      fullPath: '/habits'
-      preLoaderRoute: typeof HabitsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -191,40 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/luki': {
-      id: '/luki'
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/day': {
+      id: '/_authenticated/day'
+      path: '/day'
+      fullPath: '/day'
+      preLoaderRoute: typeof AuthenticatedDayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dreams': {
+      id: '/_authenticated/dreams'
+      path: '/dreams'
+      fullPath: '/dreams'
+      preLoaderRoute: typeof AuthenticatedDreamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/habits': {
+      id: '/_authenticated/habits'
+      path: '/habits'
+      fullPath: '/habits'
+      preLoaderRoute: typeof AuthenticatedHabitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/luki': {
+      id: '/_authenticated/luki'
       path: '/luki'
       fullPath: '/luki'
-      preLoaderRoute: typeof LukiRouteImport
+      preLoaderRoute: typeof AuthenticatedLukiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/report': {
-      id: '/report'
+    '/_authenticated/report': {
+      id: '/_authenticated/report'
       path: '/report'
       fullPath: '/report'
-      preLoaderRoute: typeof ReportRouteImport
+      preLoaderRoute: typeof AuthenticatedReportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/timer': {
-      id: '/timer'
+    '/_authenticated/timer': {
+      id: '/_authenticated/timer'
       path: '/timer'
       fullPath: '/timer'
-      preLoaderRoute: typeof TimerRouteImport
+      preLoaderRoute: typeof AuthenticatedTimerRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
-  DayRoute: DayRoute,
-  DreamsRoute: DreamsRoute,
-  HabitsRoute: HabitsRoute,
   LoginRoute: LoginRoute,
-  LukiRoute: LukiRoute,
-  ReportRoute: ReportRoute,
-  TimerRoute: TimerRoute,
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+  AuthenticatedDayRoute: AuthenticatedDayRoute,
+  AuthenticatedDreamsRoute: AuthenticatedDreamsRoute,
+  AuthenticatedHabitsRoute: AuthenticatedHabitsRoute,
+  AuthenticatedLukiRoute: AuthenticatedLukiRoute,
+  AuthenticatedReportRoute: AuthenticatedReportRoute,
+  AuthenticatedTimerRoute: AuthenticatedTimerRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

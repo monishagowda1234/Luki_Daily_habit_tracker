@@ -7,7 +7,7 @@ import { useStore, getState, update, todayKey, uid } from "@/lib/store";
 import { askLuki, contactUser } from "@/lib/luki.functions";
 import { askNotify, clock, elapsedOf, isActive, remainingOf, startTimer, useNow } from "@/lib/timer";
 
-export const Route = createFileRoute("/luki")({
+export const Route = createFileRoute("/_authenticated/luki")({
   head: () => ({
     meta: [
       { title: "Luki — Your AI Assistant" },

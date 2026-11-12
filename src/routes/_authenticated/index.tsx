@@ -4,7 +4,7 @@ import { Plus, Trash2, Check, MessageCircle } from "lucide-react";
 import { AppShell, LukiFace } from "@/components/AppShell";
 import { useStore, todayKey, uid } from "@/lib/store";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Luki — Today" },

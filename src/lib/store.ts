@@ -89,9 +89,10 @@ export async function hydrateFor(id: string) {
     await sb.from("user_state").upsert({ user_id: id, data: withoutTasks(next) });
     localStorage.removeItem(LEGACY_KEY);
   }
-  if (profile) next.settings = { ...next.settings, name: profile.name || next.settings.name, phone: profile.phone || next.settings.phone };
+  // The phone number is the account's sign-in number and can't be changed in the app.
+  if (profile) next.settings = { ...next.settings, name: profile.name || next.settings.name, phone: profile.phone };
   next.settings.joined ||= todayKey();
-  lastProfile = JSON.stringify([next.settings.name, next.settings.phone]);
+  lastProfile = next.settings.name;
   userId = id; hydratedFor = id; state = next; loaded = true;
   localStorage.setItem(cacheKey(id), JSON.stringify(state));
   notify();
@@ -133,9 +134,9 @@ function scheduleSave(id: string) {
     const sb = await db();
     const { error } = await sb.from("user_state").upsert({ user_id: id, data: withoutTasks(state), updated_at: new Date().toISOString() });
     if (error) console.error("Save failed", error.message);
-    const prof = JSON.stringify([state.settings.name, state.settings.phone]);
+    const prof = state.settings.name;
     if (prof !== lastProfile) {
-      const { error: pe } = await sb.from("profiles").update({ name: state.settings.name, phone: state.settings.phone, updated_at: new Date().toISOString() }).eq("id", id);
+      const { error: pe } = await sb.from("profiles").update({ name: state.settings.name.slice(0, 60), updated_at: new Date().toISOString() }).eq("id", id);
       if (!pe) lastProfile = prof;
     }
   }, 700);

@@ -1,24 +1,11 @@
-// Auto-injected by the Supabase integration when this file does not exist.
-//
 // Pathless layout route that gates every child under `src/routes/_authenticated/`
-// behind a signed-in Supabase user. The subtree is client-rendered (`ssr: false`)
-// because Supabase stores the session in `localStorage`, which the server cannot
-// read. Trying to gate this subtree server-side produces redirect loops or
-// false sign-out flashes on hard refresh.
-//
-// Public pages and `/auth` continue to SSR normally — they do not import this
-// layout and are not affected.
-//
-// Data fetching inside this subtree should call `createServerFn`s protected by
-// `requireSupabaseAuth`. The browser attaches the bearer token automatically
-// via `attachSupabaseAuth`, which is registered as `functionMiddleware` in
-// `src/start.ts` (auto-wired by the integration).
-//
-// Edit freely. This file is only re-injected when deleted entirely.
+// behind a signed-in user, then loads that user's saved data before any page renders.
+// Client-rendered (`ssr: false`) because the session lives in `localStorage`.
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { supabase } from '@/integrations/supabase/client'
+import { hydrateFor, update } from '@/lib/store'
+import { PENDING_SETUP_KEY } from '@/lib/phone-auth'
 
-// Lovable's Supabase auth scaffolds use `/auth`; change this if the app uses another sign-in route.
 const SIGN_IN_ROUTE = '/auth'
 
 export const Route = createFileRoute('/_authenticated')({
@@ -27,6 +14,15 @@ export const Route = createFileRoute('/_authenticated')({
     const { data, error } = await supabase.auth.getUser()
     if (error || !data.user) {
       throw redirect({ to: SIGN_IN_ROUTE })
+    }
+    await hydrateFor(data.user.id)
+    const pending = sessionStorage.getItem(PENDING_SETUP_KEY)
+    if (pending) {
+      sessionStorage.removeItem(PENDING_SETUP_KEY)
+      try {
+        const { wake, sleep } = JSON.parse(pending) as { wake?: string; sleep?: string }
+        update((st) => ({ ...st, settings: { ...st.settings, wake: wake || st.settings.wake, sleep: sleep || st.settings.sleep } }))
+      } catch { /* ignore a malformed note */ }
     }
     return { user: data.user }
   },

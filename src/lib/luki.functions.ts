@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const SYSTEM = `You are Luki, a warm, cheerful personal AI assistant (like Alexa) inside a habit & manifestation app.
 You help the user plan their day, stay focused while studying, build habits, reflect and manifest dreams. Be concise, kind and practical. Use markdown.
@@ -11,6 +12,7 @@ const ChatInput = z.object({
 });
 
 export const askLuki = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => ChatInput.parse(d))
   .handler(async ({ data }) => {
     const { generateResponse, GatewayError } = await import("@lovable.dev/ai-gateway");
@@ -29,36 +31,4 @@ export const askLuki = createServerFn({ method: "POST" })
       if (e instanceof GatewayError) return { text: `Luki is having trouble right now (${e.code}). Please try again shortly.` };
       throw e;
     }
-  });
-
-const GATEWAY = "https://connector-gateway.lovable.dev/twilio";
-const Contact = z.object({
-  kind: z.enum(["sms", "call"]),
-  to: z.string().regex(/^\+[1-9]\d{6,14}$/, "Use international format like +919876543210"),
-  message: z.string().min(1).max(1200),
-});
-
-export const contactUser = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => Contact.parse(d))
-  .handler(async ({ data }) => {
-    const key = process.env['LOVABLE_API_KEY'];
-    const tw = process.env['TWILIO_API_KEY'];
-    const from = process.env['TWILIO_FROM_NUMBER'];
-    if (!key || !tw) return { ok: false, error: "Phone service isn't connected yet." };
-    if (!from) return { ok: false, error: "Luki's sending phone number isn't set yet." };
-    const body = new URLSearchParams({ To: data.to, From: from });
-    let path = "/Messages.json";
-    if (data.kind === "sms") body.set("Body", data.message);
-    else {
-      path = "/Calls.json";
-      const safe = data.message.replace(/[<>&]/g, " ");
-      body.set("Twiml", `<Response><Say voice="Polly.Joanna">${safe}</Say></Response>`);
-    }
-    const r = await fetch(`${GATEWAY}${path}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "X-Connection-Api-Key": tw, "Content-Type": "application/x-www-form-urlencoded" },
-      body,
-    });
-    if (!r.ok) { const t = await r.text(); console.error("Twilio", r.status, t); return { ok: false, error: `Phone service error (${r.status})` }; }
-    return { ok: true };
   });

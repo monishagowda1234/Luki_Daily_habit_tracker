@@ -116,6 +116,22 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  // One listener for sign-in / sign-out: drop the old account's data and re-run the page gates.
+  useEffect(() => {
+    let unsub = () => {};
+    void import("@/integrations/supabase/client").then(({ supabase }) => {
+      const { data } = supabase.auth.onAuthStateChange((event) => {
+        if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+        if (event === "SIGNED_OUT") void import("@/lib/store").then((m) => m.clearSession());
+        void router.invalidate();
+        if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
+      });
+      unsub = () => data.subscription.unsubscribe();
+    });
+    return () => unsub();
+  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

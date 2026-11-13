@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useStore, getState } from "@/lib/store";
@@ -40,9 +40,7 @@ function useTimerWatcher(running: boolean) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { s, ready } = useStore();
-  const nav = useNavigate();
-  useEffect(() => { if (ready && !s.settings.phone) void nav({ to: "/login" }); }, [ready, s.settings.phone, nav]);
+  const { s } = useStore();
   const t = s.timer;
   const active = isActive(t);
   const now = useNow(t.runningSince !== null, 500);

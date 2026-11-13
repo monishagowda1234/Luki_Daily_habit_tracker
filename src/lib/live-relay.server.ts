@@ -630,7 +630,7 @@ export function bindLiveConnection(
           audio: { output: { voice: "marin" } },
           delegation: { type: "client" },
         },
-        transport: { type: "webrtc", sdp },
+        transport: { type: "webrtc", sdp: start.sdp },
       },
       { apiKey: config.key, signal: setupAbort.signal, runId: runID },
     );

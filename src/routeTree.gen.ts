@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
@@ -19,9 +20,15 @@ import { Route as AuthenticatedHabitsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedLukiRouteImport } from './routes/_authenticated/luki'
 import { Route as AuthenticatedReportRouteImport } from './routes/_authenticated/report'
 import { Route as AuthenticatedTimerRouteImport } from './routes/_authenticated/timer'
+import { Route as ApiPublicPhoneTurnRouteImport } from './routes/api/public/phone/turn'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -69,9 +76,15 @@ const AuthenticatedTimerRoute = AuthenticatedTimerRouteImport.update({
   path: '/timer',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicPhoneTurnRoute = ApiPublicPhoneTurnRouteImport.update({
+  id: '/api/public/phone/turn',
+  path: '/api/public/phone/turn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
+  '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/account': typeof AuthenticatedAccountRoute
   '/day': typeof AuthenticatedDayRoute
@@ -80,8 +93,10 @@ export interface FileRoutesByFullPath {
   '/luki': typeof AuthenticatedLukiRoute
   '/report': typeof AuthenticatedReportRoute
   '/timer': typeof AuthenticatedTimerRoute
+  '/api/public/phone/turn': typeof ApiPublicPhoneTurnRoute
 }
 export interface FileRoutesByTo {
+  '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/account': typeof AuthenticatedAccountRoute
   '/day': typeof AuthenticatedDayRoute
@@ -91,10 +106,12 @@ export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportRoute
   '/timer': typeof AuthenticatedTimerRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/phone/turn': typeof ApiPublicPhoneTurnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/day': typeof AuthenticatedDayRoute
@@ -104,11 +121,13 @@ export interface FileRoutesById {
   '/_authenticated/report': typeof AuthenticatedReportRoute
   '/_authenticated/timer': typeof AuthenticatedTimerRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/phone/turn': typeof ApiPublicPhoneTurnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/login'
     | '/account'
     | '/day'
@@ -117,8 +136,10 @@ export interface FileRouteTypes {
     | '/luki'
     | '/report'
     | '/timer'
+    | '/api/public/phone/turn'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/auth'
     | '/login'
     | '/account'
     | '/day'
@@ -128,9 +149,11 @@ export interface FileRouteTypes {
     | '/report'
     | '/timer'
     | '/'
+    | '/api/public/phone/turn'
   id:
     | '__root__'
     | '/_authenticated'
+    | '/auth'
     | '/login'
     | '/_authenticated/account'
     | '/_authenticated/day'
@@ -140,11 +163,14 @@ export interface FileRouteTypes {
     | '/_authenticated/report'
     | '/_authenticated/timer'
     | '/_authenticated/'
+    | '/api/public/phone/turn'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   LoginRoute: typeof LoginRoute
+  ApiPublicPhoneTurnRoute: typeof ApiPublicPhoneTurnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -154,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -219,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTimerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/phone/turn': {
+      id: '/api/public/phone/turn'
+      path: '/api/public/phone/turn'
+      fullPath: '/api/public/phone/turn'
+      preLoaderRoute: typeof ApiPublicPhoneTurnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -249,7 +289,9 @@ const AuthenticatedRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   LoginRoute: LoginRoute,
+  ApiPublicPhoneTurnRoute: ApiPublicPhoneTurnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

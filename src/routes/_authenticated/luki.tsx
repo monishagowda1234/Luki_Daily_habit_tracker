@@ -4,7 +4,8 @@ import ReactMarkdown from "react-markdown";
 import { Send, Phone, MessageSquare, Sun, Moon, Timer, Settings2 } from "lucide-react";
 import { AppShell, LukiFace } from "@/components/AppShell";
 import { useStore, getState, update, todayKey, uid } from "@/lib/store";
-import { askLuki, contactUser } from "@/lib/luki.functions";
+import { askLuki } from "@/lib/luki.functions";
+import { ringMyPhone, textMe } from "@/lib/phone.functions";
 import { askNotify, clock, elapsedOf, isActive, remainingOf, startTimer, useNow } from "@/lib/timer";
 
 export const Route = createFileRoute("/_authenticated/luki")({
@@ -75,8 +76,11 @@ function LukiPage() {
     const reply = await send(prompt);
     if (!reply) return;
     const plain = reply.replace(/[*_#`>✅]/g, "").slice(0, 1100);
-    const r = await contactUser({ data: { kind, to: s.settings.phone, message: plain } }).catch((e) => ({ ok: false, error: String(e.message ?? e) }));
-    setNote(r.ok ? (kind === "call" ? "Calling you now 📞" : "Message sent 💌") : `Couldn't reach your phone: ${"error" in r ? r.error : ""}`);
+    const r: { ok: boolean; error?: string } = await (kind === "call"
+      ? ringMyPhone({ data: { mode: prompt === night ? "night" : prompt === morning ? "morning" : "plan", today: todayKey(), localTime: new Date().toString().slice(0, 80) } })
+      : textMe({ data: { message: plain } })
+    ).catch((e: unknown) => ({ ok: false, error: e instanceof Error ? e.message : String(e) }));
+    setNote(r.ok ? (kind === "call" ? "Calling you now 📞" : "Message sent 💌") : `Couldn't reach your phone: ${r.error ?? ""}`);
   };
 
   const morning = "Give me my morning briefing: greet me, list today's tasks with times, one habit tip and a motivating line. Keep it under 80 words so it can be spoken.";
@@ -117,7 +121,7 @@ function LukiPage() {
 
       {showSettings && (
         <div className="glass mx-5 mt-3 space-y-2 p-4 text-sm">
-          {([["name", "Your name", "text"], ["phone", "Phone (e.g. +919876543210)", "tel"], ["wake", "Wake-up call", "time"], ["sleep", "Night call", "time"]] as const).map(([k, l, type]) => (
+          {([["name", "Your name", "text"], ["wake", "Wake-up call", "time"], ["sleep", "Night call", "time"]] as const).map(([k, l, type]) => (
             <label key={k} className="flex items-center justify-between gap-2"><span className="font-semibold">{l}</span>
               <input type={type} value={s.settings[k]} onChange={(e) => update((st) => ({ ...st, settings: { ...st.settings, [k]: e.target.value } }))} className="w-40 rounded-xl bg-secondary px-2 py-1.5" />
             </label>

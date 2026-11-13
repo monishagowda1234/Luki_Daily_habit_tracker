@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import type { Turn } from "@/lib/phone.server";
 
 // Twilio calls this after each thing the user says on a "Ring my phone" call.
 // Public by necessity; each call has its own secret token, checked before anything is read or changed.
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/api/public/phone/turn")({
         const { data: call } = await supabaseAdmin.from("phone_calls").select("*").eq("id", q.data.call).maybeSingle();
         if (!call || !ph.safeEqual(call.token, q.data.t)) return new Response("Not found", { status: 404 });
         const ageMin = (Date.now() - new Date(call.created_at).getTime()) / 60000;
-        const turns = (Array.isArray(call.turns) ? call.turns : []) as Array<ph.Turn & { localTime?: string }>;
+        const turns = (Array.isArray(call.turns) ? call.turns : []) as Array<Turn & { localTime?: string }>;
         if (call.status !== "active" || ageMin > ph.CALL_MAX_MINUTES + 2 || turns.length > ph.CALL_MAX_TURNS * 2) {
           return xml(ph.goodbyeTwiml("This call has ended. Talk soon!"));
         }
@@ -43,7 +44,7 @@ export const Route = createFileRoute("/api/public/phone/turn")({
 
         const { data: profile } = await supabaseAdmin.from("profiles").select("name").eq("id", call.user_id).maybeSingle();
         const localTime = turns[0]?.localTime ?? new Date().toUTCString();
-        const history: ph.Turn[] = [...turns.map(({ role, content }) => ({ role, content })), { role: "user", content: speech }];
+        const history: Turn[] = [...turns.map(({ role, content }) => ({ role, content })), { role: "user", content: speech }];
         let reply: { text: string; end: boolean };
         try {
           reply = await ph.phoneReply({ db: supabaseAdmin, userId: call.user_id, name: profile?.name ?? "", today: call.today, localTime }, history);

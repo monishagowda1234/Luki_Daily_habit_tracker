@@ -1,9 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Download, LogOut, Trash2, Phone, Clock, Target } from "lucide-react";
+import { Download, LogOut, Trash2, Phone, Clock, Target, KeyRound } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { phoneToEmail } from "@/lib/phone-auth";
 import { toast } from "sonner";
 import { AppShell, Header, LukiFace } from "@/components/AppShell";
-import { useStore, getState, resetAll, todayKey } from "@/lib/store";
+import { useStore, getState, resetAll, todayKey, clearSession } from "@/lib/store";
 import { fmtDur } from "@/lib/report";
 
 export const Route = createFileRoute("/_authenticated/account")({
@@ -41,10 +43,8 @@ function Account() {
 
   const save = () => {
     if (!f.name.trim()) { toast.error("Please add your name 💗"); return; }
-    const phone = f.phone.replace(/[\s-]/g, "");
-    if (!/^\+[1-9]\d{7,14}$/.test(phone)) { toast.error("Use a full mobile number like +919876543210"); return; }
     const goal = Math.min(960, Math.max(10, Math.round(f.focusGoal || 0)));
-    update((st) => ({ ...st, settings: { ...f, name: f.name.trim(), phone, focusGoal: goal, joined } }));
+    update((st) => ({ ...st, settings: { ...f, name: f.name.trim(), phone: s.settings.phone, focusGoal: goal, joined } }));
     toast.success("Profile saved 💗");
   };
 
@@ -54,9 +54,27 @@ function Account() {
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   };
 
-  const signOut = () => {
-    update((st) => ({ ...st, settings: { ...st.settings, phone: "" } }));
-    void nav({ to: "/login", replace: true });
+  const [pw, setPw] = useState({ cur: "", next: "", again: "" });
+  const [pwBusy, setPwBusy] = useState(false);
+  const changePassword = async () => {
+    if (pw.next.length < 8) { toast.error("New password needs at least 8 characters"); return; }
+    if (pw.next !== pw.again) { toast.error("New passwords don't match"); return; }
+    setPwBusy(true);
+    try {
+      const { data: u } = await supabase.auth.getUser();
+      const email = u.user?.email ?? phoneToEmail(s.settings.phone);
+      const { error: e1 } = await supabase.auth.signInWithPassword({ email, password: pw.cur });
+      if (e1) { toast.error("Current password is wrong"); return; }
+      const { error } = await supabase.auth.updateUser({ password: pw.next, current_password: pw.cur } as never);
+      if (error) { toast.error(error.message); return; }
+      setPw({ cur: "", next: "", again: "" }); toast.success("Password changed 🔒");
+    } finally { setPwBusy(false); }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    clearSession();
+    void nav({ to: "/auth", replace: true });
   };
 
   const wipe = () => {
@@ -100,7 +118,8 @@ function Account() {
             <input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="mt-1 w-full rounded-xl bg-secondary p-3 outline-none" />
           </label>
           <label className="block text-sm font-semibold">Mobile number (for Luki's calls)
-            <input type="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} placeholder="+919876543210" className="mt-1 w-full rounded-xl bg-secondary p-3 outline-none" />
+            <input type="tel" value={s.settings.phone} readOnly className="mt-1 w-full rounded-xl bg-secondary p-3 text-muted-foreground outline-none" />
+            <span className="mt-1 block text-xs font-normal text-muted-foreground">This is your sign-in number, so it can't be changed here.</span>
           </label>
           <div className="flex gap-3">
             <label className="flex-1 text-sm font-semibold"><span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Wake-up call</span>
@@ -118,12 +137,20 @@ function Account() {
           </button>
         </div>
 
+        <div className="glass space-y-3 p-5">
+          <h2 className="flex items-center gap-2 font-semibold"><KeyRound className="h-4 w-4 text-primary" /> Change password</h2>
+          {([["cur", "Current password"], ["next", "New password"], ["again", "Repeat new password"]] as const).map(([k, l]) => (
+            <input key={k} type="password" autoComplete={k === "cur" ? "current-password" : "new-password"} aria-label={l} placeholder={l} value={pw[k]} onChange={(e) => setPw({ ...pw, [k]: e.target.value })} className="w-full rounded-xl bg-secondary p-3 outline-none" />
+          ))}
+          <button onClick={() => void changePassword()} disabled={pwBusy || !pw.cur || !pw.next} className="w-full rounded-2xl bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50">{pwBusy ? "Changing…" : "Change password"}</button>
+        </div>
+
         <div className="glass divide-y divide-border p-2">
           <button onClick={exportData} className="flex w-full items-center gap-3 p-3 text-sm font-semibold"><Download className="h-4 w-4 text-primary" /> Download my data</button>
-          <button onClick={signOut} className="flex w-full items-center gap-3 p-3 text-sm font-semibold"><LogOut className="h-4 w-4 text-primary" /> Sign out</button>
+          <button onClick={() => void signOut()} className="flex w-full items-center gap-3 p-3 text-sm font-semibold"><LogOut className="h-4 w-4 text-primary" /> Sign out</button>
           <button onClick={wipe} className="flex w-full items-center gap-3 p-3 text-sm font-semibold text-destructive"><Trash2 className="h-4 w-4" /> Delete all my data</button>
         </div>
-        <p className="pb-2 text-center text-[11px] text-muted-foreground">Your data is saved on this phone only.</p>
+        <p className="pb-2 text-center text-[11px] text-muted-foreground">Your data is saved safely to your account.</p>
       </div>
     </AppShell>
   );

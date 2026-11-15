@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Send, Phone, MessageSquare, Sun, Moon, Timer, Settings2 } from "lucide-react";
+import { Send, Phone, PhoneCall, MessageSquare, Sun, Moon, Timer, Settings2 } from "lucide-react";
 import { AppShell, LukiFace } from "@/components/AppShell";
 import { useStore, getState, update, todayKey, uid } from "@/lib/store";
 import { askLuki } from "@/lib/luki.functions";
@@ -106,10 +106,11 @@ function LukiPage() {
         <p className="text-xs text-muted-foreground">{busy ? "thinking…" : timerOn ? `${s.timer.activity || "Focus"}: ${clock(s.timer.mode === "timer" ? remainingOf(s.timer, now) : elapsedOf(s.timer, now))}` : "your personal assistant"}</p>
       </div>
 
-      <div className="mt-4 grid grid-cols-5 gap-2 px-5">
+      <div className="mt-4 grid grid-cols-3 gap-2 px-5">
         {[
-          { icon: Sun, label: "Morning", fn: () => contact("call", morning) },
-          { icon: Moon, label: "Night", fn: () => contact("call", night) },
+          { icon: PhoneCall, label: "Talk now", fn: () => void nav({ to: "/call", search: { mode: "plan" } }) },
+          { icon: Sun, label: "Ring: morning", fn: () => contact("call", morning) },
+          { icon: Moon, label: "Ring: night", fn: () => contact("call", night) },
           { icon: MessageSquare, label: "Text me", fn: () => contact("sms", "Write a short SMS with my tasks for today. Under 50 words.") },
           { icon: Timer, label: timerOn ? "Timer" : "Focus", fn: () => { if (timerOn) void nav({ to: "/timer" }); else { askNotify(); startTimer({ mode: "timer", activity: "Focus", duration: 25 * 60_000 }); void send("I'm starting a 25 minute focus/study session. Give me one quick tip to stay focused."); } } },
           { icon: Settings2, label: "Setup", fn: () => setShowSettings((v) => !v) },

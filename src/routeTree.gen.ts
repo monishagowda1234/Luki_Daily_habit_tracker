@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as AuthenticatedCallRouteImport } from './routes/_authenticated/call'
 import { Route as AuthenticatedDayRouteImport } from './routes/_authenticated/day'
 import { Route as AuthenticatedDreamsRouteImport } from './routes/_authenticated/dreams'
 import { Route as AuthenticatedHabitsRouteImport } from './routes/_authenticated/habits'
@@ -44,6 +45,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCallRoute = AuthenticatedCallRouteImport.update({
+  id: '/call',
+  path: '/call',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDayRoute = AuthenticatedDayRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/call': typeof AuthenticatedCallRoute
   '/day': typeof AuthenticatedDayRoute
   '/dreams': typeof AuthenticatedDreamsRoute
   '/habits': typeof AuthenticatedHabitsRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/call': typeof AuthenticatedCallRoute
   '/day': typeof AuthenticatedDayRoute
   '/dreams': typeof AuthenticatedDreamsRoute
   '/habits': typeof AuthenticatedHabitsRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/_authenticated/call': typeof AuthenticatedCallRoute
   '/_authenticated/day': typeof AuthenticatedDayRoute
   '/_authenticated/dreams': typeof AuthenticatedDreamsRoute
   '/_authenticated/habits': typeof AuthenticatedHabitsRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/login'
     | '/account'
+    | '/call'
     | '/day'
     | '/dreams'
     | '/habits'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/login'
     | '/account'
+    | '/call'
     | '/day'
     | '/dreams'
     | '/habits'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/login'
     | '/_authenticated/account'
+    | '/_authenticated/call'
     | '/_authenticated/day'
     | '/_authenticated/dreams'
     | '/_authenticated/habits'
@@ -208,6 +220,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/call': {
+      id: '/_authenticated/call'
+      path: '/call'
+      fullPath: '/call'
+      preLoaderRoute: typeof AuthenticatedCallRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/day': {
@@ -264,6 +283,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+  AuthenticatedCallRoute: typeof AuthenticatedCallRoute
   AuthenticatedDayRoute: typeof AuthenticatedDayRoute
   AuthenticatedDreamsRoute: typeof AuthenticatedDreamsRoute
   AuthenticatedHabitsRoute: typeof AuthenticatedHabitsRoute
@@ -275,6 +295,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+  AuthenticatedCallRoute: AuthenticatedCallRoute,
   AuthenticatedDayRoute: AuthenticatedDayRoute,
   AuthenticatedDreamsRoute: AuthenticatedDreamsRoute,
   AuthenticatedHabitsRoute: AuthenticatedHabitsRoute,

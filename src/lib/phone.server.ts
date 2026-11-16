@@ -63,7 +63,7 @@ export function publicOrigin(requestUrl: string) {
 }
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const VOICE = "Polly.Joanna-Neural";
+const VOICE = "Polly.Ivy-Neural";
 const say = (text: string) => `<Say voice="${VOICE}">${esc(text.slice(0, 900))}</Say>`;
 
 /** Speak, then listen for the user's answer and send it to the turn webhook. */

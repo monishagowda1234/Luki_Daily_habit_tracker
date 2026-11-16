@@ -92,7 +92,7 @@ function LukiPage() {
       const now = new Date().toTimeString().slice(0, 5); const st = getState();
       const k = `luki-fired-${todayKey()}-${now}`;
       if ((now === st.settings.wake || now === st.settings.sleep) && st.settings.phone && !localStorage.getItem(k)) {
-        localStorage.setItem(k, "1"); void contact("call", now === st.settings.wake ? morning : night);
+        localStorage.setItem(k, "1"); void now;
       }
     }, 30000);
     return () => clearInterval(id);
@@ -127,7 +127,7 @@ function LukiPage() {
               <input type={type} value={s.settings[k]} onChange={(e) => update((st) => ({ ...st, settings: { ...st.settings, [k]: e.target.value } }))} className="w-40 rounded-xl bg-secondary px-2 py-1.5" />
             </label>
           ))}
-          <p className="text-xs text-muted-foreground">Luki calls you at these times while the app is open.</p>
+          <p className="text-xs text-muted-foreground">Luki rings you in the app at these times while it is open.</p>
         </div>
       )}
 

@@ -8,7 +8,7 @@ import { useLiveVoice, type LiveEvent } from "@/hooks/use-live-voice";
 import { useStore, refreshTasks, todayKey } from "@/lib/store";
 
 export const Route = createFileRoute("/_authenticated/call")({
-  validateSearch: z.object({ mode: z.enum(["morning", "night", "plan"]).optional() }),
+  validateSearch: z.object({ mode: z.enum(["morning", "night", "plan"]).optional(), incoming: z.boolean().optional() }),
   head: () => ({
     meta: [
       { title: "Call with Luki" },
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/call")({
 type Line = { role: "user" | "assistant"; text: string };
 
 function CallPage() {
-  const { mode = "plan" } = Route.useSearch();
+  const { mode = "plan", incoming } = Route.useSearch();
   const nav = useNavigate();
   const { s } = useStore();
   const token = useRef("");
@@ -55,7 +55,16 @@ function CallPage() {
 
   const live = v.status === "connecting" || v.status === "connected";
   const today = s.tasks.filter((t) => t.date === todayKey()).sort((a, b) => (a.time ?? "99").localeCompare(b.time ?? "99"));
-  const label = { idle: "Ready when you are", connecting: "Calling Luki…", connected: v.muted ? "You're muted" : "Luki is listening", stopping: "Hanging up…", closed: "Call ended" }[v.status];
+  const ringing = incoming && v.status === "idle";
+  useEffect(() => {
+    if (!ringing) return;
+    let ctx: AudioContext | undefined;
+    const ring = () => { try { ctx ??= new AudioContext(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.frequency.value = 880; g.gain.value = 0.08; o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.4); } catch { /* blocked */ } };
+    ring(); const id = setInterval(ring, 1500);
+    navigator.vibrate?.([400, 200, 400]);
+    return () => { clearInterval(id); void ctx?.close(); };
+  }, [ringing]);
+  const label = { idle: ringing ? `Luki is calling you${mode === "morning" ? " — good morning!" : mode === "night" ? " — night check-in" : ""} 📞` : "Ready when you are", connecting: "Calling Luki…", connected: v.muted ? "You're muted" : "Luki is listening", stopping: "Hanging up…", closed: "Call ended" }[v.status];
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col px-5 pb-8 pt-8">
@@ -96,7 +105,7 @@ function CallPage() {
           <button onClick={v.stop} aria-label="End call" className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive text-destructive-foreground"><PhoneOff className="h-6 w-6" /></button>
         </>) : (<>
           <button onClick={() => void nav({ to: "/luki" })} className="glass rounded-full px-5 py-3 text-sm font-bold">Back</button>
-          <button onClick={() => void begin()} disabled={v.status === "stopping"} className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground disabled:opacity-50"><Phone className="h-5 w-5" />{v.status === "closed" ? "Call again" : "Start call"}</button>
+          <button onClick={() => void begin()} disabled={v.status === "stopping"} className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground disabled:opacity-50"><Phone className="h-5 w-5" />{v.status === "closed" ? "Call again" : ringing ? "Answer" : "Start call"}</button>
         </>)}
       </div>
     </div>

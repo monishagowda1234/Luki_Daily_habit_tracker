@@ -68,7 +68,7 @@ function CallPage() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col px-5 pb-8 pt-8">
-      <audio ref={v.audioRef} autoPlay className="hidden" />
+      <audio ref={v.audioRef} autoPlay playsInline className="hidden" />
       <div className="flex flex-col items-center">
         <LukiFace size={170} talking={talking} />
         <h1 className="mt-3 text-2xl font-semibold">Luki</h1>

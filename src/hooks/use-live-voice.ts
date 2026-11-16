@@ -273,8 +273,8 @@ function createLiveVoice(options: LiveOptions) {
     answerReceived = true;
     clearTimeout(deadline);
     deadline = setTimeout(
-      () => fail("Voice media did not connect within 12 seconds. Start a new call to retry."),
-      12_000,
+      () => fail("Voice media did not connect within 25 seconds. Start a new call to retry."),
+      25_000,
     );
     await peer.setRemoteDescription({ type: "answer", sdp: event.transport.sdp });
     activate();
@@ -283,7 +283,7 @@ function createLiveVoice(options: LiveOptions) {
   async function gatherCandidates(connection: RTCPeerConnection) {
     if (connection.iceGatheringState === "complete") return;
     await new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => finish(new Error("Voice network setup timed out")), 10_000);
+      const timeout = setTimeout(() => (connection.localDescription?.sdp?.includes("a=candidate") ? finish() : finish(new Error("Voice network setup timed out"))), 4_000);
       function finish(error?: Error) {
         clearTimeout(timeout);
         connection.removeEventListener("icegatheringstatechange", changed);
@@ -313,7 +313,13 @@ function createLiveVoice(options: LiveOptions) {
         stream.getTracks().forEach((track) => track.stop());
         return;
       }
-      const connection = new RTCPeerConnection();
+      const connection = new RTCPeerConnection({
+        iceServers: [
+          { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+          { urls: "stun:stun.cloudflare.com:3478" },
+        ],
+        bundlePolicy: "max-bundle",
+      });
       peer = connection;
       for (const track of stream.getAudioTracks()) {
         track.enabled = !muted;
